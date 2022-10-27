@@ -65,14 +65,18 @@ contract MasterChefStake is Ownable {
         totalAllocPoint = 1000;
     }
 
-    function add(
-        uint256 _allocPoint,
-        IERC20 _token
-    ) public onlyOwner {
-        uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
+    function add(uint256 _allocPoint, IERC20 _token) public onlyOwner {
+        uint256 lastRewardBlock = block.number > startBlock
+            ? block.number
+            : startBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         tokenInfo.push(
-            TokenInfo({token: _token, allocPoint: _allocPoint, lastRewardBlock: lastRewardBlock, accStakePerShare: 0})
+            TokenInfo({
+                token: _token,
+                allocPoint: _allocPoint,
+                lastRewardBlock: lastRewardBlock,
+                accStakePerShare: 0
+            })
         );
     }
 
@@ -149,7 +153,11 @@ contract MasterChefStake is Ownable {
     }
 
     // Return reward multiplier over the given _from to _to block.
-    function getMultiplier(uint256 _from, uint256 _to) public view returns (uint256) {
+    function getMultiplier(uint256 _from, uint256 _to)
+        public
+        view
+        returns (uint256)
+    {
         return _to.sub(_from).mul(BONUS_MULTIPLIER);
     }
 }

@@ -15,7 +15,7 @@ contract StakeToken is Ownable, ERC20("StakeToken", "ST") {
         public
         onlyOwner
     {
-        uint256 stakeBal = balanceOf(address(this));
+        uint256 stakeBal = balanceOf(msg.sender);
         if (_amount > stakeBal) {
             _transfer(msg.sender, _to, stakeBal);
         } else {
