@@ -6,7 +6,6 @@ import { MasterChefStake, StakeToken } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 async function deployStakeToken() {
-  const [owner, otherAccount] = await ethers.getSigners();
   const StakeToken = await ethers.getContractFactory("StakeToken");
   const stakeToken = await StakeToken.deploy();
   return stakeToken;
@@ -45,13 +44,8 @@ describe("MasterChefStake", function () {
 
   describe("Deployment", function () {
     it("Should set the right stakeTokenPerBlock, startBlock, totalAllocPoint and stakeToken", async function () {
-      const {
-        masterChefStake,
-        owner,
-        stakeToken,
-        startBlock,
-        stakeTokenPerBlock,
-      } = await loadFixture(deployMasterChefStake);
+      const { masterChefStake, stakeToken, startBlock, stakeTokenPerBlock } =
+        await loadFixture(deployMasterChefStake);
 
       expect(await masterChefStake.stakeToken()).to.equal(stakeToken.address);
       expect(await masterChefStake.stakeTokenPerBlock()).to.equal(
@@ -149,14 +143,12 @@ describe("MasterChefStake", function () {
       await masterChefStake.connect(owner).add(100, erc20Token.address);
 
       const depositAmount = 10000000000000;
-      let currentBalance = await erc20Token.balanceOf(owner.address);
       await erc20Token
         .connect(owner)
         .approve(masterChefStake.address, depositAmount);
 
       await masterChefStake.connect(owner).deposit(0, depositAmount);
 
-      const depositUpdatedBalance = await erc20Token.balanceOf(owner.address);
       const depositUserInfo = await masterChefStake.userInfo(0, owner.address);
       const depositTokenInfo = await masterChefStake.tokenInfo(0);
 
